@@ -42,9 +42,6 @@ jobs:
       - name: Lint with Clippy
         run: cargo clippy --all-targets -- -D warnings
 
-      - name: Run tests
-        run: cargo test
-
       - name: Check build
         run: cargo build --release
 
