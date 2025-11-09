@@ -1,6 +1,7 @@
 <img src="assets/logo.jpg" alt="xleak logo" align="right" width="120">
 
 # xleak
+<br clear="right">
 
 [![CI](https://img.shields.io/github/actions/workflow/status/bgreenwell/xleak/ci.yml?style=for-the-badge)](https://github.com/bgreenwell/xleak/actions/workflows/ci.yml)
 [![Crates.io](https://img.shields.io/crates/v/xleak.svg?style=for-the-badge&color=%23107C41)](https://crates.io/crates/xleak)
