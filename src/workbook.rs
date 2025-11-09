@@ -8,19 +8,17 @@ pub struct Workbook {
 }
 
 impl Workbook {
-    /// Open an Excel file (auto-detects format)
     pub fn open(path: impl AsRef<Path>) -> Result<Self> {
         let sheets = open_workbook_auto(path.as_ref()).context("Failed to open workbook")?;
 
         Ok(Self { sheets })
     }
 
-    /// Get all sheet names
     pub fn sheet_names(&self) -> Vec<String> {
         self.sheets.sheet_names()
     }
 
-    /// Load a specific sheet by name (eager - loads all rows)
+    /// Loads all rows eagerly into memory
     pub fn load_sheet(&mut self, name: &str) -> Result<SheetData> {
         let range = self
             .sheets
@@ -33,7 +31,7 @@ impl Workbook {
         Ok(SheetData::from_range_with_formulas(range, formula_range))
     }
 
-    /// Load a specific sheet with lazy loading (only loads headers, rows on demand)
+    /// Loads only headers; rows fetched on demand
     pub fn load_sheet_lazy(&mut self, name: &str) -> Result<LazySheetData> {
         let range = self
             .sheets
@@ -70,7 +68,7 @@ pub struct LazySheetData {
 }
 
 impl LazySheetData {
-    /// Create a new lazy sheet from ranges (doesn't load all rows)
+    /// Extracts headers only; defers row loading
     pub fn from_range_with_formulas(
         range: Range<Data>,
         formula_range: Option<Range<String>>,
@@ -97,7 +95,7 @@ impl LazySheetData {
         }
     }
 
-    /// Load a specific range of rows on demand (zero-indexed, header not included)
+    /// Zero-indexed row range; header excluded
     pub fn get_rows(
         &self,
         start: usize,
@@ -120,7 +118,6 @@ impl LazySheetData {
         (rows, formulas)
     }
 
-    /// Get formulas for a specific range of rows
     fn get_formulas_for_range(&self, start: usize, end: usize) -> Vec<Vec<Option<String>>> {
         if let Some(ref formula_range) = self.formula_range {
             let formula_start = formula_range.start().unwrap_or((0, 0));
@@ -158,7 +155,7 @@ impl LazySheetData {
         }
     }
 
-    /// Convert to eager SheetData (loads everything)
+    /// Consumes lazy data and loads all rows into memory
     #[allow(clippy::wrong_self_convention)]
     pub fn to_sheet_data(self) -> SheetData {
         SheetData::from_range_with_formulas(self.range, self.formula_range)
@@ -176,35 +173,16 @@ pub enum CellValue {
     DateTime(f64), // Excel datetime as float
 }
 
-/// Cell value with optional formula
-#[derive(Debug, Clone)]
-#[allow(dead_code)]
-pub struct CellValueWithFormula {
-    pub value: CellValue,
-    pub formula: Option<String>,
-}
-
 impl CellValue {
-    /// Attach a formula to this cell value
-    #[allow(dead_code)]
-    pub fn with_formula(self, formula: Option<String>) -> CellValueWithFormula {
-        CellValueWithFormula {
-            value: self,
-            formula,
-        }
-    }
-
-    #[allow(dead_code)]
     pub fn is_empty(&self) -> bool {
         matches!(self, CellValue::Empty)
     }
 
-    #[allow(dead_code)]
     pub fn is_numeric(&self) -> bool {
         matches!(self, CellValue::Int(_) | CellValue::Float(_))
     }
 
-    /// Get raw value as string without formatting (for clipboard/export)
+    /// Returns unformatted value (for export/clipboard)
     pub fn to_raw_string(&self) -> String {
         match self {
             CellValue::Empty => String::new(),
@@ -334,11 +312,6 @@ impl std::fmt::Display for CellValue {
 }
 
 impl SheetData {
-    #[allow(dead_code)]
-    pub fn from_range(range: Range<Data>) -> Self {
-        Self::from_range_with_formulas(range, None)
-    }
-
     pub fn from_range_with_formulas(
         range: Range<Data>,
         formula_range: Option<Range<String>>,

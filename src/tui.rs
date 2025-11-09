@@ -55,7 +55,7 @@ impl SheetDataSource {
         }
     }
 
-    /// Get rows for rendering (handles caching for lazy loading)
+    /// Fetches rows with automatic cache management
     fn get_rows(
         &mut self,
         start: usize,
@@ -101,7 +101,6 @@ impl SheetDataSource {
         }
     }
 
-    /// Get a single cell (for copy, cell detail, etc.)
     fn get_cell(&mut self, row: usize, col: usize) -> (Option<CellValue>, Option<String>) {
         match self {
             SheetDataSource::Eager(data) => {
@@ -650,7 +649,6 @@ impl TuiState {
         self.cursor_row = self.sheet_data.height().saturating_sub(1);
     }
 
-    /// Convert column index to Excel-style letter(s)
     fn col_to_letter(&self, col: usize) -> String {
         let mut result = String::new();
         let mut n = col + 1;
@@ -662,7 +660,6 @@ impl TuiState {
         result.chars().rev().collect()
     }
 
-    /// Get current cell address (e.g., "B7")
     fn current_cell_address(&self) -> String {
         format!(
             "{}{}",

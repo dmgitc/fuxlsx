@@ -12,6 +12,9 @@ xleak is a command-line tool that displays Excel spreadsheets in the terminal wi
 - CLI Framework: `clap` (v4.5) with derive macros
 - Error Handling: `anyhow` (v1.0)
 - Terminal Display: `prettytable-rs` (v0.10)
+- Interactive TUI: `ratatui` (v0.29) + `crossterm` (v0.28)
+- Clipboard: `arboard` (v3.4)
+- Date/Time: `chrono` (v0.4)
 
 **Supported File Formats:** `.xlsx`, `.xls`, `.xlsm`, `.xlsb`, `.ods`
 
@@ -23,6 +26,7 @@ xleak/
 ├── src/
 │   ├── main.rs            # CLI interface and argument parsing
 │   ├── workbook.rs        # Calamine wrapper for reading Excel files
+│   ├── tui.rs             # Interactive TUI application state and rendering
 │   └── display.rs         # Terminal display and export formatting
 ├── generate_test_data.py  # Python script to create test Excel files
 ├── README.md              # User-facing documentation
@@ -80,10 +84,18 @@ cargo fmt -- --check
 ```
 
 ### Testing
-Currently no automated tests are implemented. Future tests should use:
+Unit tests are implemented at the bottom of module files (`src/workbook.rs` and `src/tui.rs`).
+
+Run tests with:
 ```bash
 cargo test
 ```
+
+Test coverage includes:
+- Cell value conversions and formatting
+- Excel datetime handling
+- Column letter conversions
+- Cell address parsing
 
 ### Creating Test Data
 ```bash
@@ -104,6 +116,7 @@ python3 generate_test_data.py
 ### Module Organization
 - `main.rs`: CLI parsing and orchestration only
 - `workbook.rs`: All Excel file I/O and data extraction
+- `tui.rs`: Interactive TUI state management and event handling
 - `display.rs`: All formatting and output (terminal, CSV, JSON, text)
 
 ### Naming Conventions
@@ -132,15 +145,20 @@ When extending functionality:
 3. **New Export Formats:** Add function to `display.rs` following existing `export_*` pattern
 4. **New Data Processing:** Add methods to `SheetData` in `workbook.rs`
 
-### Future Features (see .planning/ for any relevant documentation)
+### Implemented Features (v0.1.0+)
+- ✅ Interactive TUI with ratatui + crossterm
+- ✅ Search functionality (full-text with n/N navigation)
+- ✅ Formula display mode (view in cell detail popup)
+- ✅ Clipboard support (copy cell/row with c/C)
+- ✅ Large file optimization with lazy loading (1000+ rows)
+- ✅ Multi-sheet navigation (Tab/Shift+Tab)
+- ✅ Jump to cell (Ctrl+G for addresses like A100, 10,5)
 
-Planned additions to match doxx feature set:
-- Interactive TUI with ratatui + crossterm
-- Search functionality
-- Formula display mode
-- Clipboard support
-- Cell formatting visualization
-- Large file optimization with lazy loading
+### Future Features (see .planning/ for any relevant documentation)
+- 🚧 Cell formatting visualization (colors, borders)
+- 🚧 Advanced filtering/sorting
+- 🚧 Column width auto-sizing
+- 🚧 Freeze panes support
 
 ### Dependencies
 
@@ -148,10 +166,12 @@ Planned additions to match doxx feature set:
 - `calamine`: Excel parsing (do not add alternative parsers)
 - `clap`: CLI (use derive macros, not builder pattern)
 - `anyhow`: Error handling (prefer over thiserror for applications)
-- `prettytable-rs`: Terminal tables
+- `prettytable-rs`: Terminal tables for non-interactive mode
+- `ratatui` + `crossterm`: Interactive TUI framework
+- `arboard`: Cross-platform clipboard support
+- `chrono`: Date/time handling for Excel datetime values
 
 **Future (commented out in Cargo.toml):**
-- `ratatui` + `crossterm`: For TUI mode
 - `serde` + `serde_json`: For structured JSON export (currently using manual JSON)
 
 **Do NOT add without discussion:**
