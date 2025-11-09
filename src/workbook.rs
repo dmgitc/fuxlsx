@@ -174,10 +174,12 @@ pub enum CellValue {
 }
 
 impl CellValue {
+    #[allow(dead_code)]
     pub fn is_empty(&self) -> bool {
         matches!(self, CellValue::Empty)
     }
 
+    #[allow(dead_code)]
     pub fn is_numeric(&self) -> bool {
         matches!(self, CellValue::Int(_) | CellValue::Float(_))
     }
