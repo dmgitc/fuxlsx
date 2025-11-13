@@ -446,9 +446,13 @@ Looking to view Word documents in the terminal? Check out **[doxx](https://githu
 
 ## License
 
-MIT
+MIT License — see [LICENSE](LICENSE) file for details.
 
 ## Credits
 
 - Inspired by [doxx](https://github.com/bgreenwell/doxx) by bgreenwell
 - Powered by [calamine](https://github.com/tafia/calamine)
+
+---
+
+**Made for developers who live in the terminal** 🚀
