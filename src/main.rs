@@ -89,7 +89,7 @@ fn main() -> Result<()> {
                 let sheet_names = wb.sheet_names();
                 for sheet in &sheet_names {
                     let tables_in_sheet = wb.table_names_in_sheet(sheet)?;
-                    if tables_in_sheet.contains(&table_name) {
+                    if tables_in_sheet.contains(table_name) {
                         println!("{sheet}\t{table_name}");
                         break;
                     }
