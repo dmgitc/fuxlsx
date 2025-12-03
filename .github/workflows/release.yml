@@ -324,15 +324,56 @@ jobs:
           done
           git push
 
+  publish-scoop-manifest:
+    needs:
+      - plan
+      - host
+    runs-on: "ubuntu-22.04"
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PLAN: ${{ needs.plan.outputs.val }}
+      GITHUB_USER: "axo bot"
+      GITHUB_EMAIL: "admin+bot@axo.dev"
+    if: ${{ !fromJson(needs.plan.outputs.val).announcement_is_prerelease || fromJson(needs.plan.outputs.val).publish_prereleases }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          repository: "bgreenwell/scoop-bucket"
+          token: ${{ secrets.SCOOP_BUCKET_TOKEN }}
+      - name: Fetch scoop manifests
+        uses: actions/download-artifact@v4
+        with:
+          pattern: artifacts-*
+          path: bucket/
+          merge-multiple: true
+      - name: Commit manifest files
+        run: |
+          git config --global user.name "${GITHUB_USER}"
+          git config --global user.email "${GITHUB_EMAIL}"
+
+          for release in $(echo "$PLAN" | jq --compact-output '.releases[] | select([.artifacts[] | endswith(".json")] | any)'); do
+            filename=$(echo "$release" | jq '.artifacts[] | select(endswith(".json") and (. | contains("xleak")))' --raw-output)
+            if [ -n "$filename" ]; then
+              name=$(basename "$filename" .json)
+              version=$(echo "$release" | jq .app_version --raw-output)
+
+              git add "bucket/${filename}"
+              git commit -m "${name} ${version}" || echo "Nothing to commit for ${filename}"
+            fi
+          done
+          git push
+
   announce:
     needs:
       - plan
       - host
       - publish-homebrew-formula
+      - publish-scoop-manifest
     # use "always() && ..." to allow us to wait for all publish jobs while
     # still allowing individual publish jobs to skip themselves (for prereleases).
     # "host" however must run to completion, no skipping allowed!
-    if: ${{ always() && needs.host.result == 'success' && (needs.publish-homebrew-formula.result == 'skipped' || needs.publish-homebrew-formula.result == 'success') }}
+    if: ${{ always() && needs.host.result == 'success' && (needs.publish-homebrew-formula.result == 'skipped' || needs.publish-homebrew-formula.result == 'success') && (needs.publish-scoop-manifest.result == 'skipped' || needs.publish-scoop-manifest.result == 'success') }}
     runs-on: "ubuntu-22.04"
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
