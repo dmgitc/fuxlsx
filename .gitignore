@@ -48,3 +48,6 @@ Desktop.ini
 *.bak
 *.tmp
 *.old
+
+# Planning documents (local only)
+.planning/
