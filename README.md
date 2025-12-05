@@ -7,6 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-%232196F3.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-%23D34516.svg?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![Homebrew](https://img.shields.io/badge/Homebrew-Available-%23FBB040?style=for-the-badge&logo=homebrew)](https://github.com/bgreenwell/homebrew-tap)
+[![Scoop](https://img.shields.io/badge/Scoop-Available-%23E56C27?style=for-the-badge)](https://github.com/bgreenwell/scoop-bucket)
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-blue?style=for-the-badge)](https://github.com/bgreenwell/xleak/releases/latest)
 
 > Expose Excel files in your terminal - no Microsoft Excel required!
