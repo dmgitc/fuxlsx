@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.5] - 2025-12-04
+
 ### Fixed
 - Help popup not appearing on Windows - `?` key now correctly expects SHIFT modifier (thanks [@aarif](https://github.com/aarif)! [#27](https://github.com/bgreenwell/xleak/issues/27))
 - VIM mode `$` keybinding now correctly expects SHIFT modifier on Windows
