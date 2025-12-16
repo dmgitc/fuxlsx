@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate large Excel file for testing xleak's lazy loading performance.
+Generate large Excel file for testing fuxlsx's lazy loading performance.
 Run: python3 generate_test_large.py [num_rows]
 Default: 10,000 rows
 """
@@ -74,8 +74,8 @@ def create_large_file(num_rows=10000):
     print(f"   - Generation time: {elapsed:.1f} seconds")
     print()
     print("Test with:")
-    print(f"  ./target/release/xleak {filename} -i")
-    print(f"  ./target/release/xleak {filename} --sheet LargeData -n 20")
+    print(f"  ./target/release/fuxlsx {filename} -i")
+    print(f"  ./target/release/fuxlsx {filename} --sheet LargeData -n 20")
 
 if __name__ == "__main__":
     import sys

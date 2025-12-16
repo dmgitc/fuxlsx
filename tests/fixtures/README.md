@@ -1,6 +1,6 @@
 # Test Fixtures
 
-This directory contains test data and generator scripts for xleak.
+This directory contains test data and generator scripts for fuxlsx.
 
 ## Test files
 
@@ -60,28 +60,28 @@ python generate_test_tables.py
 
 ### Important: formula caching
 
-After generating test_comprehensive.xlsx, **open it in Excel and save** to cache formula results. Formulas will show as `#NAME?` in xleak until Excel calculates them.
+After generating test_comprehensive.xlsx, **open it in Excel and save** to cache formula results. Formulas will show as `#NAME?` in fuxlsx until Excel calculates them.
 
-## Testing with xleak
+## Testing with fuxlsx
 
 ```bash
 # Comprehensive test (interactive TUI)
-./target/release/xleak tests/fixtures/test_comprehensive.xlsx -i
+./target/release/fuxlsx tests/fixtures/test_comprehensive.xlsx -i
 
 # View specific sheets
-./target/release/xleak tests/fixtures/test_comprehensive.xlsx --sheet DateEdgeCases
-./target/release/xleak tests/fixtures/test_comprehensive.xlsx --sheet MultilineCells
+./target/release/fuxlsx tests/fixtures/test_comprehensive.xlsx --sheet DateEdgeCases
+./target/release/fuxlsx tests/fixtures/test_comprehensive.xlsx --sheet MultilineCells
 
 # Test large file with lazy loading
-./target/release/xleak tests/fixtures/test_large.xlsx -i
-./target/release/xleak tests/fixtures/test_large.xlsx --sheet LargeData -n 20
+./target/release/fuxlsx tests/fixtures/test_large.xlsx -i
+./target/release/fuxlsx tests/fixtures/test_large.xlsx --sheet LargeData -n 20
 
 # Test Excel tables
-./target/release/xleak tests/fixtures/test_tables.xlsx --list-tables
-./target/release/xleak tests/fixtures/test_tables.xlsx --table Products -i
+./target/release/fuxlsx tests/fixtures/test_tables.xlsx --list-tables
+./target/release/fuxlsx tests/fixtures/test_tables.xlsx --table Products -i
 
 # Test date fix (Issue #25)
-./target/release/xleak tests/fixtures/test_comprehensive.xlsx --sheet DateEdgeCases
+./target/release/fuxlsx tests/fixtures/test_comprehensive.xlsx --sheet DateEdgeCases
 # Row 9-10 should show 2025-11-19 (not 2025-11-18)
 ```
 

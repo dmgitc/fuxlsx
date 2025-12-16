@@ -564,6 +564,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d9c4f5dac5e15c24eb999c26181a6ca40b39fe946cbe4c263c7209467bc83af2"
 
 [[package]]
+name = "fuxlsx"
+version = "0.2.5"
+dependencies = [
+ "anyhow",
+ "arboard",
+ "calamine",
+ "chrono",
+ "clap",
+ "crossterm",
+ "dirs",
+ "prettytable-rs",
+ "ratatui",
+ "serde",
+ "serde_json",
+ "toml",
+]
+
+[[package]]
 name = "gethostname"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1805,24 +1823,6 @@ name = "x11rb-protocol"
 version = "0.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ea6fc2961e4ef194dcbfe56bb845534d0dc8098940c7e5c012a258bfec6701bd"
-
-[[package]]
-name = "xleak"
-version = "0.2.5"
-dependencies = [
- "anyhow",
- "arboard",
- "calamine",
- "chrono",
- "clap",
- "crossterm",
- "dirs",
- "prettytable-rs",
- "ratatui",
- "serde",
- "serde_json",
- "toml",
-]
 
 [[package]]
 name = "zerocopy"

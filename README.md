@@ -1,19 +1,19 @@
-# xleak <img src="assets/logo.jpg" align="right" width="120" />
+# fuxlsx <img src="assets/logo.jpg" align="right" width="120" />
 
-[![CI](https://img.shields.io/github/actions/workflow/status/bgreenwell/xleak/ci.yml?style=for-the-badge)](https://github.com/bgreenwell/xleak/actions/workflows/ci.yml)
-[![Crates.io](https://img.shields.io/crates/v/xleak.svg?style=for-the-badge&color=%23107C41)](https://crates.io/crates/xleak)
-[![Downloads](https://img.shields.io/crates/d/xleak?style=for-the-badge&color=%23107C41)](https://crates.io/crates/xleak)
+[![CI](https://img.shields.io/github/actions/workflow/status/bgreenwell/fuxlsx/ci.yml?style=for-the-badge)](https://github.com/bgreenwell/fuxlsx/actions/workflows/ci.yml)
+[![Crates.io](https://img.shields.io/crates/v/fuxlsx.svg?style=for-the-badge&color=%23107C41)](https://crates.io/crates/fuxlsx)
+[![Downloads](https://img.shields.io/crates/d/fuxlsx?style=for-the-badge&color=%23107C41)](https://crates.io/crates/fuxlsx)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-%232196F3.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-%23D34516.svg?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![Easy Install](https://img.shields.io/badge/Easy%20Install-Homebrew%20%7C%20Scoop-%23FBB040?style=for-the-badge)](#installation)
-[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-blue?style=for-the-badge)](https://github.com/bgreenwell/xleak/releases/latest)
+[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-blue?style=for-the-badge)](https://github.com/bgreenwell/fuxlsx/releases/latest)
 
 > Expose Excel files in your terminal - no Microsoft Excel required!
 
-Inspired by [doxx](https://github.com/bgreenwell/doxx), `xleak` brings Excel spreadsheets to your command line with beautiful rendering, powerful export capabilities, and a feature-rich interactive TUI.
+Inspired by [doxx](https://github.com/bgreenwell/doxx), `fuxlsx` brings Excel spreadsheets to your command line with beautiful rendering, powerful export capabilities, and a feature-rich interactive TUI.
 
-![xleak demo](assets/demo.gif)
+![fuxlsx demo](assets/demo.gif)
 
 ## Features
 
@@ -42,58 +42,58 @@ Inspired by [doxx](https://github.com/bgreenwell/doxx), `xleak` brings Excel spr
 
 **macOS / Linux (Homebrew):**
 ```bash
-brew install bgreenwell/tap/xleak
+brew install bgreenwell/tap/fuxlsx
 ```
 
 **Windows (Scoop):**
 ```powershell
 scoop bucket add bgreenwell https://github.com/bgreenwell/scoop-bucket
-scoop install xleak
+scoop install fuxlsx
 ```
 
 **Windows (WinGet):** _(Coming soon - pending initial PR merge)_
 ```powershell
-winget install bgreenwell.xleak
+winget install bgreenwell.fuxlsx
 ```
 
 **Arch Linux (AUR):**
 ```bash
 # Using yay
-yay -S xleak-bin
+yay -S fuxlsx-bin
 
 # Or using paru
-paru -S xleak-bin
+paru -S fuxlsx-bin
 ```
 
 **Cargo (all platforms):**
 ```bash
-cargo install xleak
+cargo install fuxlsx
 ```
 
 **Nix:**
 ```bash
 # Run directly
-nix run github:bgreenwell/xleak -- file.xlsx
+nix run github:bgreenwell/fuxlsx -- file.xlsx
 
 # Install with flakes
-nix profile install github:bgreenwell/xleak
+nix profile install github:bgreenwell/fuxlsx
 ```
 
 ### Quick Install Scripts
 
 **macOS / Linux:**
 ```bash
-curl --proto '=https' --tlsv1.2 -LsSf https://github.com/bgreenwell/xleak/releases/latest/download/xleak-installer.sh | sh
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/bgreenwell/fuxlsx/releases/latest/download/fuxlsx-installer.sh | sh
 ```
 
 **Windows (PowerShell):**
 ```powershell
-irm https://github.com/bgreenwell/xleak/releases/latest/download/xleak-installer.ps1 | iex
+irm https://github.com/bgreenwell/fuxlsx/releases/latest/download/fuxlsx-installer.ps1 | iex
 ```
 
 ### Pre-built Binaries
 
-Download platform-specific binaries from the [latest release](https://github.com/bgreenwell/xleak/releases/latest):
+Download platform-specific binaries from the [latest release](https://github.com/bgreenwell/fuxlsx/releases/latest):
 
 - **macOS**: Universal binary (Apple Silicon + Intel)
 - **Linux**: x86_64 (glibc and musl)
@@ -102,8 +102,8 @@ Download platform-specific binaries from the [latest release](https://github.com
 ### Build from Source
 
 ```bash
-git clone https://github.com/bgreenwell/xleak.git
-cd xleak
+git clone https://github.com/bgreenwell/fuxlsx.git
+cd fuxlsx
 cargo install --path .
 ```
 
@@ -114,16 +114,16 @@ cargo install --path .
 ### Interactive TUI Mode (Recommended)
 ```bash
 # Launch interactive viewer
-xleak quarterly-report.xlsx -i
+fuxlsx quarterly-report.xlsx -i
 
 # Start on a specific sheet
-xleak report.xlsx --sheet "Q3 Results" -i
+fuxlsx report.xlsx --sheet "Q3 Results" -i
 
 # View formulas by default
-xleak data.xlsx -i --formulas
+fuxlsx data.xlsx -i --formulas
 
 # Enable horizontal scrolling for wide files (auto-size columns)
-xleak wide-data.xlsx -i -H
+fuxlsx wide-data.xlsx -i -H
 ```
 
 **TUI Keyboard Shortcuts:**
@@ -142,109 +142,109 @@ xleak wide-data.xlsx -i -H
 
 #### View a spreadsheet
 ```bash
-xleak quarterly-report.xlsx
+fuxlsx quarterly-report.xlsx
 ```
 
 #### View a specific sheet
 ```bash
 # By name
-xleak report.xlsx --sheet "Q3 Results"
+fuxlsx report.xlsx --sheet "Q3 Results"
 
 # By index (1-based)
-xleak report.xlsx --sheet 2
+fuxlsx report.xlsx --sheet 2
 ```
 
 #### Limit displayed rows
 ```bash
 # Show only first 20 rows
-xleak large-file.xlsx -n 20
+fuxlsx large-file.xlsx -n 20
 
 # Show all rows
-xleak file.xlsx -n 0
+fuxlsx file.xlsx -n 0
 ```
 
 #### Export data
 ```bash
 # Export to CSV
-xleak data.xlsx --export csv > output.csv
+fuxlsx data.xlsx --export csv > output.csv
 
 # Export to JSON
-xleak data.xlsx --export json > output.json
+fuxlsx data.xlsx --export json > output.json
 
 # Export as plain text (tab-separated)
-xleak data.xlsx --export text > output.txt
+fuxlsx data.xlsx --export text > output.txt
 ```
 
 #### Work with Excel Tables (.xlsx only)
 ```bash
 # List all tables in a workbook
-xleak workbook.xlsx --list-tables
+fuxlsx workbook.xlsx --list-tables
 
 # Extract a specific table as JSON (default)
-xleak workbook.xlsx --table "Sales"
+fuxlsx workbook.xlsx --table "Sales"
 
 # Extract table as CSV
-xleak workbook.xlsx --table "Sales" --export csv > sales.csv
+fuxlsx workbook.xlsx --table "Sales" --export csv > sales.csv
 
 # Extract table as plain text
-xleak workbook.xlsx --table "Employees" --export text
+fuxlsx workbook.xlsx --table "Employees" --export text
 ```
 
 #### Combine options
 ```bash
 # Export specific sheet as CSV
-xleak workbook.xlsx --sheet "Sales" --export csv > sales.csv
+fuxlsx workbook.xlsx --sheet "Sales" --export csv > sales.csv
 ```
 
 ## Examples
 
 ```bash
 # Launch interactive viewer
-xleak quarterly-report.xlsx -i
+fuxlsx quarterly-report.xlsx -i
 
 # Quick preview in non-interactive mode
-xleak quarterly-report.xlsx
+fuxlsx quarterly-report.xlsx
 
 # See specific sheet with limited rows
-xleak financial-data.xlsx --sheet "Summary" -n 10
+fuxlsx financial-data.xlsx --sheet "Summary" -n 10
 
 # Interactive mode with formulas visible
-xleak data.xlsx -i --formulas
+fuxlsx data.xlsx -i --formulas
 
 # Export all data from a sheet
-xleak survey-results.xlsx --sheet "Responses" --export csv -n 0
+fuxlsx survey-results.xlsx --sheet "Responses" --export csv -n 0
 ```
 
 ## Configuration
 
-xleak supports configuration via a TOML file for persistent settings like default theme and keybindings.
+fuxlsx supports configuration via a TOML file for persistent settings like default theme and keybindings.
 
 ### Config File Location
 
-**Default:** `~/.config/xleak/config.toml` (or `$XDG_CONFIG_HOME/xleak/config.toml`)
+**Default:** `~/.config/fuxlsx/config.toml` (or `$XDG_CONFIG_HOME/fuxlsx/config.toml`)
 
 **Platform-specific fallback locations:**
-- **macOS:** `~/Library/Application Support/xleak/config.toml`
-- **Linux:** `~/.config/xleak/config.toml` (same as XDG)
-- **Windows:** `%APPDATA%\xleak\config.toml`
+- **macOS:** `~/Library/Application Support/fuxlsx/config.toml`
+- **Linux:** `~/.config/fuxlsx/config.toml` (same as XDG)
+- **Windows:** `%APPDATA%\fuxlsx\config.toml`
 
 **Custom:** Use `--config` flag to specify a different location:
 ```bash
-xleak --config /path/to/config.toml file.xlsx -i
+fuxlsx --config /path/to/config.toml file.xlsx -i
 ```
 
 ### Quick Start
 
 1. **Copy the example:**
    ```bash
-   mkdir -p ~/.config/xleak
-   cp config.toml.example ~/.config/xleak/config.toml
+   mkdir -p ~/.config/fuxlsx
+   cp config.toml.example ~/.config/fuxlsx/config.toml
    ```
 
 2. **Or create a minimal config:**
    ```bash
-   mkdir -p ~/.config/xleak
-   cat > ~/.config/xleak/config.toml << 'EOF'
+   mkdir -p ~/.config/fuxlsx
+   cat > ~/.config/fuxlsx/config.toml << 'EOF'
    [theme]
    default = "Dracula"
 
@@ -259,7 +259,7 @@ xleak --config /path/to/config.toml file.xlsx -i
 
 3. **Test your config:**
    ```bash
-   xleak file.xlsx -i
+   fuxlsx file.xlsx -i
    ```
 
 ### Configuration Options
@@ -294,13 +294,13 @@ column_width = 30
 ```
 
 **Notes:**
-- `max_rows` only affects non-interactive display mode (`xleak file.xlsx`)
+- `max_rows` only affects non-interactive display mode (`fuxlsx file.xlsx`)
 - Interactive TUI mode (`-i`) always shows all rows with lazy loading for large files
 - `column_width` applies to both modes and can be overridden with `-w` flag
 
 #### Keybindings
 
-xleak supports two built-in profiles plus custom keybindings:
+fuxlsx supports two built-in profiles plus custom keybindings:
 
 ```toml
 [keybindings]
@@ -462,7 +462,7 @@ copy_row = "Ctrl+Shift+c"
 
 ## Performance
 
-xleak is optimized for both small and large files:
+fuxlsx is optimized for both small and large files:
 - **Small files** (< 1000 rows): Instant loading with full eager loading
 - **Large files** (≥ 1000 rows): Automatic lazy loading with row caching
   - Memory usage: ~400KB for 10,000 row files
@@ -473,7 +473,7 @@ xleak is optimized for both small and large files:
 
 | Tool | Format | Speed | Terminal Native | Interactive | Search | Formulas |
 |------|--------|-------|----------------|-------------|--------|----------|
-| **xleak** | ✅ xlsx/xls/ods | ⚡ Fast | ✅ Yes | ✅ Full TUI | ✅ Yes | ✅ Yes |
+| **fuxlsx** | ✅ xlsx/xls/ods | ⚡ Fast | ✅ Yes | ✅ Full TUI | ✅ Yes | ✅ Yes |
 | Excel | ✅ xlsx | ❌ Slow startup | ❌ GUI only | ✅ Yes | ✅ Yes | ✅ Yes |
 | pandas | ✅ Many | ❌ Slow | ❌ Python required | ❌ No | ❌ No | ❌ No |
 | csvlook | ❌ CSV only | ✅ Fast | ✅ Yes | ❌ No | ❌ No | ❌ No |
@@ -495,14 +495,14 @@ Looking to view Word documents in the terminal? Check out **[doxx](https://githu
 
 **"File not found"**
 - Ensure the file path is correct
-- Use quotes if the filename has spaces: `xleak "My Report.xlsx"`
+- Use quotes if the filename has spaces: `fuxlsx "My Report.xlsx"`
 
 **"No sheets found"**
 - The Excel file might be corrupted
 - Try opening it in Excel/LibreOffice first to verify
 
 **"Sheet 'X' not found"**
-- Run `xleak file.xlsx` (without --sheet) to see all available sheets
+- Run `fuxlsx file.xlsx` (without --sheet) to see all available sheets
 - Sheet names are case-sensitive
 
 ## License

@@ -44,11 +44,11 @@ jobs:
           TAG="${{ steps.get-tag.outputs.tag }}"
           VERSION="${TAG#v}"
 
-          ZIP_FILE="xleak-x86_64-pc-windows-msvc.zip"
+          ZIP_FILE="fuxlsx-x86_64-pc-windows-msvc.zip"
           SHA_FILE="${ZIP_FILE}.sha256"
 
           gh release download "$TAG" \
-            --repo bgreenwell/xleak \
+            --repo bgreenwell/fuxlsx \
             --pattern "$ZIP_FILE" \
             --pattern "$SHA_FILE"
 
@@ -59,7 +59,7 @@ jobs:
       - name: Generate Scoop manifest
         run: |
           SHA256=$(cat "$SHA_FILE" | cut -d ' ' -f 1)
-          DOWNLOAD_URL="https://github.com/bgreenwell/xleak/releases/download/v${VERSION}/${ZIP_FILE}"
+          DOWNLOAD_URL="https://github.com/bgreenwell/fuxlsx/releases/download/v${VERSION}/${ZIP_FILE}"
 
           mkdir -p scoop-bucket/bucket
 
@@ -70,7 +70,7 @@ jobs:
             '{
               version: $version,
               description: "A fast terminal Excel viewer with interactive TUI, search, formulas, and export capabilities",
-              homepage: "https://github.com/bgreenwell/xleak",
+              homepage: "https://github.com/bgreenwell/fuxlsx",
               license: "MIT",
               architecture: {
                 "64bit": {
@@ -78,18 +78,18 @@ jobs:
                   hash: $hash
                 }
               },
-              bin: "xleak.exe",
+              bin: "fuxlsx.exe",
               checkver: {
-                github: "https://github.com/bgreenwell/xleak"
+                github: "https://github.com/bgreenwell/fuxlsx"
               },
               autoupdate: {
                 architecture: {
                   "64bit": {
-                    url: "https://github.com/bgreenwell/xleak/releases/download/v$version/xleak-x86_64-pc-windows-msvc.zip"
+                    url: "https://github.com/bgreenwell/fuxlsx/releases/download/v$version/fuxlsx-x86_64-pc-windows-msvc.zip"
                   }
                 }
               }
-            }' > scoop-bucket/bucket/xleak.json
+            }' > scoop-bucket/bucket/fuxlsx.json
 
       - name: Commit and push manifest
         working-directory: scoop-bucket
@@ -97,11 +97,11 @@ jobs:
           git config user.name "${GITHUB_USER}"
           git config user.email "${GITHUB_EMAIL}"
 
-          git add bucket/xleak.json
+          git add bucket/fuxlsx.json
 
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "xleak ${VERSION}"
+            git commit -m "fuxlsx ${VERSION}"
             git push
           fi

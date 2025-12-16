@@ -33,17 +33,17 @@ assignees: ''
 All publishing is automated. Verify these workflows complete successfully:
 
 ### Core Release (`.github/workflows/release.yml`)
-- [ ] GitHub Release created at https://github.com/bgreenwell/xleak/releases/tag/vX.Y.Z
+- [ ] GitHub Release created at https://github.com/bgreenwell/fuxlsx/releases/tag/vX.Y.Z
 - [ ] All artifacts present (binaries, tarballs, installers, checksums)
 - [ ] Homebrew formula published to [homebrew-tap](https://github.com/bgreenwell/homebrew-tap)
-- [ ] Published to [crates.io](https://crates.io/crates/xleak)
+- [ ] Published to [crates.io](https://crates.io/crates/fuxlsx)
 
 ### Scoop Publishing (`.github/workflows/publish-scoop.yml`)
 - [ ] Manifest updated in [scoop-bucket](https://github.com/bgreenwell/scoop-bucket)
 - [ ] Manifest uses correct ZIP file and SHA256
 
 ### AUR Publishing (`.github/workflows/publish-aur.yml`)
-- [ ] PKGBUILD updated in [AUR package](https://aur.archlinux.org/packages/xleak-bin)
+- [ ] PKGBUILD updated in [AUR package](https://aur.archlinux.org/packages/fuxlsx-bin)
 - [ ] .SRCINFO generated correctly
 - [ ] Version, URL, and SHA256 correct
 
@@ -56,10 +56,10 @@ All publishing is automated. Verify these workflows complete successfully:
 
 Test at least one platform from each category:
 
-- [ ] Homebrew (macOS/Linux): `brew upgrade xleak && xleak --version`
-- [ ] Scoop (Windows): `scoop update xleak && xleak --version`
-- [ ] AUR (Arch Linux): `yay -Syu xleak-bin && xleak --version`
-- [ ] WinGet (Windows): `winget upgrade bgreenwell.xleak` (after PR merge)
+- [ ] Homebrew (macOS/Linux): `brew upgrade fuxlsx && fuxlsx --version`
+- [ ] Scoop (Windows): `scoop update fuxlsx && fuxlsx --version`
+- [ ] AUR (Arch Linux): `yay -Syu fuxlsx-bin && fuxlsx --version`
+- [ ] WinGet (Windows): `winget upgrade bgreenwell.fuxlsx` (after PR merge)
 - [ ] Shell installer: Test install script from releases
 - [ ] MSI installer: Download and test from GitHub Releases
 

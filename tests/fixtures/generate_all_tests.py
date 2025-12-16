@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Master script to generate all test files for xleak.
+Master script to generate all test files for fuxlsx.
 Run: python3 generate_all_tests.py
 """
 
@@ -42,7 +42,7 @@ def run_generator(script_name, description):
 def main():
     """Generate all test files."""
     print("="*60)
-    print("xleak Test File Generator")
+    print("fuxlsx Test File Generator")
     print("="*60)
     print()
 
@@ -86,9 +86,9 @@ def main():
         print("  Open test_comprehensive.xlsx in Excel and save it to cache formula results!")
         print()
         print("Test with:")
-        print("  ./target/release/xleak tests/fixtures/test_comprehensive.xlsx -i")
-        print("  ./target/release/xleak tests/fixtures/test_large.xlsx -i")
-        print("  ./target/release/xleak tests/fixtures/test_tables.xlsx --list-tables")
+        print("  ./target/release/fuxlsx tests/fixtures/test_comprehensive.xlsx -i")
+        print("  ./target/release/fuxlsx tests/fixtures/test_large.xlsx -i")
+        print("  ./target/release/fuxlsx tests/fixtures/test_tables.xlsx --list-tables")
     else:
         print("✗ Some test files failed to generate")
         print("="*60)

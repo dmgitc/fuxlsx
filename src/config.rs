@@ -94,23 +94,23 @@ impl Config {
     }
 
     /// Get the default config file path
-    /// Checks XDG location first (~/.config/xleak/config.toml), then OS-specific location
+    /// Checks XDG location first (~/.config/fuxlsx/config.toml), then OS-specific location
     pub fn default_config_path() -> Result<PathBuf> {
-        // First, try XDG-compliant location (~/.config/xleak/config.toml)
+        // First, try XDG-compliant location (~/.config/fuxlsx/config.toml)
         if let Some(home) = dirs::home_dir() {
-            let xdg_path = home.join(".config").join("xleak").join("config.toml");
+            let xdg_path = home.join(".config").join("fuxlsx").join("config.toml");
             if xdg_path.exists() {
                 return Ok(xdg_path);
             }
         }
 
         // Fall back to OS-specific config directory
-        // macOS: ~/Library/Application Support/xleak/config.toml
-        // Linux: ~/.config/xleak/config.toml (same as XDG)
-        // Windows: %APPDATA%\xleak\config.toml
+        // macOS: ~/Library/Application Support/fuxlsx/config.toml
+        // Linux: ~/.config/fuxlsx/config.toml (same as XDG)
+        // Windows: %APPDATA%\fuxlsx\config.toml
         let config_dir = dirs::config_dir()
             .context("Failed to determine config directory")?
-            .join("xleak");
+            .join("fuxlsx");
 
         Ok(config_dir.join("config.toml"))
     }
@@ -142,8 +142,8 @@ impl Config {
 
     /// Generate example TOML config
     fn example_toml() -> String {
-        r#"# xleak configuration file
-# Location: $XDG_CONFIG_HOME/xleak/config.toml (usually ~/.config/xleak/config.toml)
+        r#"# fuxlsx configuration file
+# Location: $XDG_CONFIG_HOME/fuxlsx/config.toml (usually ~/.config/fuxlsx/config.toml)
 
 [theme]
 # Default theme to use on startup

@@ -189,9 +189,9 @@ def main():
             print(f"  - {sheet}: {ws.max_row - 1} data rows (no table)")
 
     print("\nTest with:")
-    print(f"  ./target/release/xleak {filename} -i")
-    print(f"  ./target/release/xleak {filename} --list-tables")
-    print(f"  ./target/release/xleak {filename} --table Products")
+    print(f"  ./target/release/fuxlsx {filename} -i")
+    print(f"  ./target/release/fuxlsx {filename} --list-tables")
+    print(f"  ./target/release/fuxlsx {filename} --table Products")
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Report a bug or issue with xleak
+about: Report a bug or issue with fuxlsx
 title: '[BUG] '
 labels: bug
 assignees: ''
@@ -27,7 +27,7 @@ assignees: ''
 
 ## Environment
 
-- **xleak version**: <!-- Run `xleak --version` -->
+- **fuxlsx version**: <!-- Run `fuxlsx --version` -->
 - **OS**: <!-- e.g., macOS 14.0, Ubuntu 22.04, Windows 11 -->
 - **Installation method**: <!-- Homebrew, Scoop, cargo install, etc. -->
 

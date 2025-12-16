@@ -8,7 +8,7 @@ mod tui;
 mod workbook;
 
 #[derive(Parser)]
-#[command(name = "xleak")]
+#[command(name = "fuxlsx")]
 #[command(author, version, about = "Expose Excel files in your terminal - no Microsoft Excel required", long_about = None)]
 struct Cli {
     /// Path to the Excel file (.xlsx, .xls, .xlsm, .ods)
@@ -47,7 +47,7 @@ struct Cli {
     #[arg(short = 'H', long)]
     horizontal_scroll: bool,
 
-    /// Path to custom config file (default: $XDG_CONFIG_HOME/xleak/config.toml)
+    /// Path to custom config file (default: $XDG_CONFIG_HOME/fuxlsx/config.toml)
     #[arg(long, value_name = "PATH")]
     config: Option<PathBuf>,
 
@@ -119,8 +119,8 @@ fn main() -> Result<()> {
                 "Interactive mode (-i) is not supported with --table.\n\
                  \n\
                  Options:\n\
-                 • View table in terminal: xleak file.xlsx --table \"{table_name}\"\n\
-                 • View full sheet in TUI: xleak file.xlsx --sheet \"{}\" -i",
+                 • View table in terminal: fuxlsx file.xlsx --table \"{table_name}\"\n\
+                 • View full sheet in TUI: fuxlsx file.xlsx --sheet \"{}\" -i",
                 table_data.sheet_name
             );
         }
@@ -208,7 +208,7 @@ fn display_table_data(table: &workbook::TableData, max_rows: usize) -> Result<()
 
     // Print header info
     println!("\n╔═════════════════════════════════════════════════╗");
-    println!("║  xleak - Excel Table Viewer                     ║");
+    println!("║  fuxlsx - Excel Table Viewer                    ║");
     println!("╚═════════════════════════════════════════════════╝");
     println!();
     println!("Table: {} (from sheet: {})", table.name, table.sheet_name);

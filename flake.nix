@@ -1,5 +1,5 @@
 {
-  description = "xleak - Terminal Excel viewer with interactive TUI, search, formulas, and export";
+  description = "fuxlsx - Terminal Excel viewer with interactive TUI, search, formulas, and export";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -24,8 +24,8 @@
         };
 
         # Define the package
-        xleak = pkgs.rustPlatform.buildRustPackage rec {
-          pname = "xleak";
+        fuxlsx = pkgs.rustPlatform.buildRustPackage rec {
+          pname = "fuxlsx";
           version = (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.version;
 
           src = ./.;
@@ -37,7 +37,7 @@
 
           meta = with pkgs.lib; {
             description = "Terminal Excel viewer with interactive TUI, search, formulas, and export";
-            homepage = "https://github.com/bgreenwell/xleak";
+            homepage = "https://github.com/bgreenwell/fuxlsx";
             license = licenses.mit;
             maintainers = [ ];
             platforms = platforms.all;
@@ -47,8 +47,8 @@
       in
       {
         # Default package
-        packages.default = xleak;
-        packages.xleak = xleak;
+        packages.default = fuxlsx;
+        packages.fuxlsx = fuxlsx;
 
         # Development shell
         devShells.default = pkgs.mkShell {
@@ -79,7 +79,7 @@
           
           # Development shell hook
           shellHook = ''
-            echo "Welcome to the xleak Nix development environment!"
+            echo "Welcome to the fuxlsx Nix development environment!"
             echo ""
             echo "Dependencies loaded:"
             echo "  - Rust ${rustToolchain.version} with clippy, rustfmt, rust-src"
@@ -90,7 +90,7 @@
             echo ""
             echo "Nix commands:"
             echo "  nix build                - Build the project"
-            echo "  nix run                  - Run xleak"
+            echo "  nix run                  - Run fuxlsx"
             echo "  nix run . -- --help      - Run with help flag"
             echo "  nix develop              - Enter this dev shell"
             echo "  nix flake check          - Run all checks (fmt, clippy, build)"
@@ -107,7 +107,7 @@
             echo "  cargo clippy             - Run linter"
             echo "  cargo fmt                - Format code"
             echo ""
-            echo "Pro tip: 'nix run github:bgreenwell/xleak -- file.xlsx' to run from anywhere!"
+            echo "Pro tip: 'nix run github:bgreenwell/fuxlsx -- file.xlsx' to run from anywhere!"
             echo ""
           '';
         };
@@ -115,12 +115,12 @@
         # Apps for easy running
         apps.default = {
           type = "app";
-          program = "${xleak}/bin/xleak";
+          program = "${fuxlsx}/bin/fuxlsx";
         };
 
         # Checks
         checks = {
-          build = xleak;
+          build = fuxlsx;
           
           # Add format check
           fmt-check = pkgs.runCommand "fmt-check" {

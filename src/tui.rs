@@ -1535,7 +1535,7 @@ impl TuiState {
         let help_lines = vec![
             Line::from(vec![
                 Span::styled(
-                    "xleak",
+                    "fuxlsx",
                     Style::default()
                         .fg(Color::Cyan)
                         .add_modifier(Modifier::BOLD),
@@ -1651,11 +1651,11 @@ impl TuiState {
             ]),
             Line::from(vec![
                 Span::styled("  q                ", Style::default().fg(Color::Green)),
-                Span::raw("Quit xleak"),
+                Span::raw("Quit fuxlsx"),
             ]),
             Line::from(vec![
                 Span::styled("  Esc              ", Style::default().fg(Color::Green)),
-                Span::raw("Quit xleak (or clear search)"),
+                Span::raw("Quit fuxlsx (or clear search)"),
             ]),
             Line::from(""),
             Line::from(Span::styled(
@@ -1726,7 +1726,7 @@ impl TuiState {
                     .add_modifier(Modifier::BOLD),
             )),
             Line::from("  Customize keybindings and theme in config file:"),
-            Line::from("  ~/.config/xleak/config.toml"),
+            Line::from("  ~/.config/fuxlsx/config.toml"),
             Line::from(""),
             Line::from("  Supports VIM-style navigation (hjkl, gg, G, 0, $)"),
             Line::from("  Custom keybindings per action"),

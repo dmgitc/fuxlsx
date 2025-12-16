@@ -1,4 +1,4 @@
-# Creating a Demo GIF for xleak
+# Creating a Demo GIF for fuxlsx
 
 ## Recommended Tools
 
@@ -38,11 +38,11 @@ ttystudio demo.gif
 
 ## Demo Script
 
-Here's a suggested demo flow showcasing xleak's key features:
+Here's a suggested demo flow showcasing fuxlsx's key features:
 
 1. **Launch interactive mode**
    ```bash
-   xleak tests/fixtures/test_data.xlsx -i
+   fuxlsx tests/fixtures/test_data.xlsx -i
    ```
 
 2. **Navigate cells** (arrow keys for 2-3 seconds)
@@ -82,7 +82,7 @@ Set Width 1200
 Set Height 700
 Set Theme "Dracula"
 
-Type "xleak tests/fixtures/test_data.xlsx -i"
+Type "fuxlsx tests/fixtures/test_data.xlsx -i"
 Enter
 Sleep 2s
 
@@ -169,7 +169,7 @@ gifsicle -O3 --colors 256 assets/demo.gif -o assets/demo-optimized.gif
 The demo gif is already referenced in README.md:
 
 ```markdown
-![xleak demo](assets/demo.gif)
+![fuxlsx demo](assets/demo.gif)
 ```
 
 Alternatively, upload to GitHub releases and link it there.

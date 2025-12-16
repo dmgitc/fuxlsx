@@ -34,7 +34,7 @@ jobs:
         run: cargo doc --no-deps
 
       - name: Create redirect page
-        run: echo '<meta http-equiv="refresh" content="0; url=xleak">' > target/doc/index.html
+        run: echo '<meta http-equiv="refresh" content="0; url=fuxlsx">' > target/doc/index.html
 
       - name: Setup Pages
         id: pages

@@ -1,19 +1,19 @@
-# xleak configuration file
+# fuxlsx configuration file
 # =======================
 #
-# Location: $XDG_CONFIG_HOME/xleak/config.toml (usually ~/.config/xleak/config.toml)
+# Location: $XDG_CONFIG_HOME/fuxlsx/config.toml (usually ~/.config/fuxlsx/config.toml)
 #
 # Platform-specific fallback locations:
-#   macOS:   ~/Library/Application Support/xleak/config.toml
-#   Linux:   ~/.config/xleak/config.toml
-#   Windows: %APPDATA%\xleak\config.toml
+#   macOS:   ~/Library/Application Support/fuxlsx/config.toml
+#   Linux:   ~/.config/fuxlsx/config.toml
+#   Windows: %APPDATA%\fuxlsx\config.toml
 #
-# Custom location: xleak --config /path/to/config.toml file.xlsx -i
+# Custom location: fuxlsx --config /path/to/config.toml file.xlsx -i
 #
 # Quick start:
-#   1. Copy this file: cp config.toml.example ~/.config/xleak/config.toml
+#   1. Copy this file: cp config.toml.example ~/.config/fuxlsx/config.toml
 #   2. Uncomment and modify settings below
-#   3. Test: xleak file.xlsx -i
+#   3. Test: fuxlsx file.xlsx -i
 
 # =============================================================================
 # THEME SETTINGS
@@ -38,13 +38,13 @@ default = "Default"
 
 [ui]
 # Default maximum rows to display in non-interactive mode (0 = all)
-# Only affects: xleak file.xlsx (without -i flag)
+# Only affects: fuxlsx file.xlsx (without -i flag)
 # Does NOT affect interactive TUI mode (which always shows all rows with lazy loading)
 max_rows = 50
 
 # Default maximum column width in characters
 # Applies to both interactive and non-interactive modes
-# Can be overridden with -w flag: xleak file.xlsx -w 40
+# Can be overridden with -w flag: fuxlsx file.xlsx -w 40
 column_width = 30
 
 # =============================================================================

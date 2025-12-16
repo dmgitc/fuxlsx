@@ -60,7 +60,7 @@
 
     <Product
         Id='*'
-        Name='xleak'
+        Name='fuxlsx'
         UpgradeCode='7336173B-1EE3-408E-AF34-D930507B8941'
         Manufacturer='Brandon Greenwell'
         Language='1033'
@@ -83,11 +83,11 @@
             DowngradeErrorMessage='A newer version of [ProductName] is already installed. Setup will now exit.'/>
 
         <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' DiskPrompt='CD-ROM #1'/>
-        <Property Id='DiskPrompt' Value='xleak Installation'/>
+        <Property Id='DiskPrompt' Value='fuxlsx Installation'/>
 
         <Directory Id='TARGETDIR' Name='SourceDir'>
             <Directory Id='$(var.PlatformProgramFilesFolder)' Name='PFiles'>
-                <Directory Id='APPLICATIONFOLDER' Name='xleak'>
+                <Directory Id='APPLICATIONFOLDER' Name='fuxlsx'>
                     
                     <!--
                       Enabling the license sidecar file in the installer is a four step process:
@@ -123,9 +123,9 @@
                         <Component Id='binary0' Guid='*'>
                             <File
                                 Id='exe0'
-                                Name='xleak.exe'
+                                Name='fuxlsx.exe'
                                 DiskId='1'
-                                Source='$(var.CargoTargetBinDir)\xleak.exe'
+                                Source='$(var.CargoTargetBinDir)\fuxlsx.exe'
                                 KeyPath='yes'/>
                         </Component>
                     </Directory>
@@ -173,7 +173,7 @@
         <!--<Icon Id='ProductICO' SourceFile='wix\Product.ico'/>-->
         <!--<Property Id='ARPPRODUCTICON' Value='ProductICO' />-->
 
-        <Property Id='ARPHELPLINK' Value='https://github.com/bgreenwell/xleak'/>
+        <Property Id='ARPHELPLINK' Value='https://github.com/bgreenwell/fuxlsx'/>
         
         <UI>
             <UIRef Id='WixUI_FeatureTree'/>

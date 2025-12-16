@@ -31,18 +31,18 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
-      - name: Checkout xleak repository
+      - name: Checkout fuxlsx repository
         uses: actions/checkout@v4
         with:
-          path: xleak
+          path: fuxlsx
 
       - name: Download release tarball and SHA256
         run: |
           VERSION="${{ steps.get-version.outputs.version }}"
-          TARBALL="xleak-x86_64-unknown-linux-gnu.tar.xz"
+          TARBALL="fuxlsx-x86_64-unknown-linux-gnu.tar.xz"
           SHA_FILE="${TARBALL}.sha256"
 
-          cd xleak
+          cd fuxlsx
           gh release download "v${VERSION}" \
             --pattern "$SHA_FILE"
 
@@ -62,20 +62,20 @@ jobs:
           cat > PKGBUILD << 'EOF'
           # Maintainer: Brandon Greenwell <greenwell.brandon@gmail.com>
 
-          pkgname=xleak-bin
+          pkgname=fuxlsx-bin
           pkgver=VERSION_PLACEHOLDER
           pkgrel=1
           pkgdesc="A fast terminal Excel viewer with interactive TUI, search, formulas, and export capabilities"
-          url="https://github.com/bgreenwell/xleak"
+          url="https://github.com/bgreenwell/fuxlsx"
           license=("MIT")
           arch=("x86_64")
-          provides=("xleak")
-          conflicts=("xleak")
-          source=("https://github.com/bgreenwell/xleak/releases/download/v$pkgver/TARBALL_PLACEHOLDER")
+          provides=("fuxlsx")
+          conflicts=("fuxlsx")
+          source=("https://github.com/bgreenwell/fuxlsx/releases/download/v$pkgver/TARBALL_PLACEHOLDER")
           sha256sums=("SHA256_PLACEHOLDER")
 
           package() {
-              install -Dm755 xleak -t "$pkgdir/usr/bin"
+              install -Dm755 fuxlsx -t "$pkgdir/usr/bin"
               install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
           }
           EOF
@@ -111,7 +111,7 @@ jobs:
 
       - name: Clone AUR repository
         run: |
-          git clone ssh://aur@aur.archlinux.org/xleak-bin.git aur-repo
+          git clone ssh://aur@aur.archlinux.org/fuxlsx-bin.git aur-repo
 
       - name: Update AUR repository
         run: |

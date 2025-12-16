@@ -42,7 +42,7 @@ pub fn display_table(
 ) -> Result<()> {
     // Print header info
     println!("\n╔═════════════════════════════════════════════════╗");
-    println!("║  xleak - Excel File Viewer                      ║");
+    println!("║  fuxlsx - Excel File Viewer                     ║");
     println!("╚═════════════════════════════════════════════════╝");
     println!();
     println!(

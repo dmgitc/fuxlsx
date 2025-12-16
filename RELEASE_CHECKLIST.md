@@ -1,6 +1,6 @@
 # Release Checklist
 
-Use this checklist when preparing a new release of xleak. You can also create a GitHub issue using the "Release" template to track progress.
+Use this checklist when preparing a new release of fuxlsx. You can also create a GitHub issue using the "Release" template to track progress.
 
 ## Pre-Release
 
@@ -26,7 +26,7 @@ Use this checklist when preparing a new release of xleak. You can also create a 
 
 All of the following are now automated via GitHub Actions:
 
-- [ ] **GitHub Release** created at https://github.com/bgreenwell/xleak/releases/tag/vX.Y.Z
+- [ ] **GitHub Release** created at https://github.com/bgreenwell/fuxlsx/releases/tag/vX.Y.Z
   - [ ] All platform binaries present (Linux, macOS, Windows)
   - [ ] Tarballs (.tar.xz, .tar.gz) and ZIP archive
   - [ ] MSI installer for Windows
@@ -39,10 +39,10 @@ All of the following are now automated via GitHub Actions:
 - [ ] **Scoop** manifest published to [bgreenwell/scoop-bucket](https://github.com/bgreenwell/scoop-bucket)
   - Automated by: `.github/workflows/publish-scoop.yml`
 
-- [ ] **crates.io** published at https://crates.io/crates/xleak
+- [ ] **crates.io** published at https://crates.io/crates/fuxlsx
   - Automated by: `publish-crates-io` job in release.yml
 
-- [ ] **AUR** package updated at [xleak-bin](https://aur.archlinux.org/packages/xleak-bin)
+- [ ] **AUR** package updated at [fuxlsx-bin](https://aur.archlinux.org/packages/fuxlsx-bin)
   - Automated by: `.github/workflows/publish-aur.yml`
   - PKGBUILD and .SRCINFO auto-generated and pushed
 
@@ -55,34 +55,34 @@ All of the following are now automated via GitHub Actions:
 - [ ] **Homebrew (macOS/Linux)**:
   ```bash
   brew update
-  brew upgrade xleak
-  xleak --version
+  brew upgrade fuxlsx
+  fuxlsx --version
   ```
 
 - [ ] **Scoop (Windows)**:
   ```powershell
   scoop update
-  scoop update xleak
-  xleak --version
+  scoop update fuxlsx
+  fuxlsx --version
   ```
 
 - [ ] **AUR (Arch Linux)**:
   ```bash
-  yay -Syu xleak-bin
-  xleak --version
+  yay -Syu fuxlsx-bin
+  fuxlsx --version
   ```
 
 - [ ] **WinGet (Windows)**:
   ```powershell
-  winget upgrade bgreenwell.xleak
-  xleak --version
+  winget upgrade bgreenwell.fuxlsx
+  fuxlsx --version
   ```
   **Note:** May take 1-2 days for WinGet PR to be merged
 
 - [ ] **Shell installer (Linux/macOS)**:
   ```bash
   curl --proto '=https' --tlsv1.2 -LsSf \
-    https://github.com/bgreenwell/xleak/releases/latest/download/xleak-installer.sh | sh
+    https://github.com/bgreenwell/fuxlsx/releases/latest/download/fuxlsx-installer.sh | sh
   ```
 
 - [ ] **MSI installer (Windows)**: Download and test from GitHub Releases
@@ -126,7 +126,7 @@ If automation fails for a specific channel, you can fall back to manual publishi
 
 - **AUR Manual Process**: See git history of this file (commit before automation)
 - **WinGet Manual Process**: Use `komac update` CLI tool
-- **Scoop Manual Process**: Manually edit bucket/xleak.json in scoop-bucket repo
+- **Scoop Manual Process**: Manually edit bucket/fuxlsx.json in scoop-bucket repo
 
 ### Workflow Summaries
 

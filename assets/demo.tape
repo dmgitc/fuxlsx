@@ -7,8 +7,8 @@ Set Theme "Dracula"
 Set TypingSpeed 100ms
 Set PlaybackSpeed 1.0
 
-# Launch xleak in interactive mode
-Type "xleak tests/fixtures/test_data.xlsx -i"
+# Launch fuxlsx in interactive mode
+Type "fuxlsx tests/fixtures/test_data.xlsx -i"
 Enter
 Sleep 3s
 

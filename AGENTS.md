@@ -1,4 +1,4 @@
-# xleak - AI Agent Instructions
+# fuxlsx - AI Agent Instructions
 
 Excel terminal viewer written in Rust with TUI, search, formulas, and export capabilities.
 
@@ -101,7 +101,7 @@ cargo run -- tests/fixtures/test_comprehensive.xlsx --export csv > test.csv
 cargo run -- tests/fixtures/test_comprehensive.xlsx --export json > test.json
 
 # Performance check (release mode is crucial)
-time ./target/release/xleak tests/fixtures/test_large.xlsx
+time ./target/release/fuxlsx tests/fixtures/test_large.xlsx
 
 # Install globally after changes
 cargo install --path .
@@ -109,7 +109,7 @@ cargo install --path .
 
 ## Release Process
 
-xleak uses cargo-dist for automated releases. All distribution channels are now automated. See [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md) for complete instructions. Create a GitHub issue using the "Release" template to track progress.
+fuxlsx uses cargo-dist for automated releases. All distribution channels are now automated. See [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md) for complete instructions. Create a GitHub issue using the "Release" template to track progress.
 
 **Distribution channels:**
 - GitHub Releases, Homebrew, Scoop, WinGet, crates.io, AUR (all automated)
