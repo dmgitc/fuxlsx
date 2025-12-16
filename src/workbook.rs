@@ -378,10 +378,11 @@ pub struct CellCoordinate {
 /// A single edit operation
 #[derive(Debug, Clone)]
 pub struct CellEdit {
+    #[allow(dead_code)] // Reserved for future undo functionality
     pub original_value: CellValue,
+    #[allow(dead_code)] // Reserved for future undo functionality
     pub original_formula: Option<String>,
     pub new_value: CellValue,
-    // Note: new_formula is always None - editing clears the formula
 }
 
 /// Tracks all pending edits to the workbook
@@ -401,6 +402,7 @@ impl Changeset {
         self.edits.insert(coord, edit);
     }
 
+    #[allow(dead_code)] // Reserved for future undo functionality
     pub fn remove_edit(&mut self, coord: &CellCoordinate) {
         self.edits.remove(coord);
     }
@@ -409,6 +411,7 @@ impl Changeset {
         self.edits.get(coord)
     }
 
+    #[allow(dead_code)] // API completeness
     pub fn has_changes(&self) -> bool {
         !self.edits.is_empty()
     }
@@ -417,6 +420,7 @@ impl Changeset {
         self.edits.clear();
     }
 
+    #[allow(dead_code)] // API completeness
     pub fn iter(&self) -> impl Iterator<Item = (&CellCoordinate, &CellEdit)> {
         self.edits.iter()
     }
