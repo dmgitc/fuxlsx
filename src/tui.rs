@@ -1,4 +1,4 @@
-use crate::workbook::{CellValue, LazySheetData, SheetData, Workbook};
+use crate::workbook::{CellCoordinate, CellEdit, CellValue, Changeset, LazySheetData, SheetData, Workbook};
 use anyhow::{Context, Result};
 use arboard::Clipboard;
 use crossterm::{
@@ -14,6 +14,7 @@ use ratatui::{
     widgets::{Block, Borders, Cell, Clear, Paragraph, Row, Table, Wrap},
 };
 use std::io;
+use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
 /// Available themes
@@ -499,6 +500,14 @@ pub struct TuiState {
     current_theme: Theme, // Current color theme
     // Config state
     config: crate::config::Config, // User configuration
+    // Edit mode state
+    file_path: PathBuf,            // Path to the Excel file (for saving)
+    edit_mode: bool,               // Whether we're in edit input mode
+    edit_input: String,            // Current edit input text
+    edit_cursor_pos: usize,        // Cursor position in edit input
+    changeset: Changeset,          // Pending edits to the workbook
+    is_modified: bool,             // Whether there are unsaved changes
+    quit_confirm_mode: bool,       // Whether we're showing quit confirmation
 }
 
 impl TuiState {
@@ -510,6 +519,7 @@ impl TuiState {
         initial_sheet_name: &str,
         config: &crate::config::Config,
         horizontal_scroll: bool,
+        file_path: PathBuf,
     ) -> Result<Self> {
         let sheet_names = workbook.sheet_names();
         let current_sheet_index = sheet_names
@@ -562,6 +572,13 @@ impl TuiState {
             progress: None,
             current_theme: Self::parse_theme_name(&config.theme.default),
             config: config.clone(),
+            file_path,
+            edit_mode: false,
+            edit_input: String::new(),
+            edit_cursor_pos: 0,
+            changeset: Changeset::new(),
+            is_modified: false,
+            quit_confirm_mode: false,
         };
 
         // Calculate column widths if horizontal scrolling is enabled
@@ -759,6 +776,89 @@ impl TuiState {
     fn enter_jump_mode(&mut self) {
         self.jump_mode = true;
         self.jump_input.clear();
+    }
+
+    /// Enter edit mode for the current cell
+    fn enter_edit_mode(&mut self) {
+        // Get current cell value to pre-populate edit input
+        let (cell_value, _formula) = self.sheet_data.get_cell(self.cursor_row, self.cursor_col);
+
+        // Convert cell value to string for editing
+        self.edit_input = match cell_value {
+            Some(CellValue::Empty) | None => String::new(),
+            Some(ref cv) => cv.to_string(),
+        };
+
+        // Position cursor at end of input
+        self.edit_cursor_pos = self.edit_input.len();
+        self.edit_mode = true;
+    }
+
+    /// Commit the current edit
+    fn commit_edit(&mut self) {
+        // Get the original value and formula
+        let (original_value, original_formula) = self.sheet_data.get_cell(self.cursor_row, self.cursor_col);
+
+        // Parse the input to determine the new value
+        let new_value = CellValue::parse_from_input(&self.edit_input);
+
+        // Create the edit record
+        let coord = CellCoordinate {
+            sheet_name: self.current_sheet_name().to_string(),
+            row: self.cursor_row,
+            col: self.cursor_col,
+        };
+
+        let edit = CellEdit {
+            original_value: original_value.unwrap_or(CellValue::Empty),
+            original_formula,
+            new_value,
+        };
+
+        // Add to changeset
+        self.changeset.add_edit(coord, edit);
+        self.is_modified = true;
+
+        // Show feedback
+        self.copy_feedback = Some((
+            format!("Cell updated (Ctrl+S to save)"),
+            Instant::now(),
+        ));
+
+        // Exit edit mode
+        self.edit_mode = false;
+        self.edit_input.clear();
+        self.edit_cursor_pos = 0;
+    }
+
+    /// Cancel the current edit
+    fn cancel_edit(&mut self) {
+        self.edit_mode = false;
+        self.edit_input.clear();
+        self.edit_cursor_pos = 0;
+    }
+
+    /// Save the workbook with changes
+    fn save_workbook(&mut self) -> Result<()> {
+        if !self.is_modified {
+            self.copy_feedback = Some(("No changes to save".to_string(), Instant::now()));
+            return Ok(());
+        }
+
+        // Save the workbook with changes
+        match crate::save::save_workbook_with_changes(&self.file_path, &self.changeset) {
+            Ok(()) => {
+                // Clear modified flag and changeset after successful save
+                self.is_modified = false;
+                self.changeset.clear();
+                self.copy_feedback = Some(("Saved successfully!".to_string(), Instant::now()));
+                Ok(())
+            }
+            Err(e) => {
+                self.copy_feedback = Some((format!("Save failed: {}", e), Instant::now()));
+                Err(e)
+            }
+        }
     }
 
     /// Parse jump input and navigate to that location
@@ -1179,10 +1279,93 @@ impl TuiState {
                 return;
             }
 
+            // If in edit mode, handle edit input
+            if self.edit_mode {
+                match code {
+                    KeyCode::Char(c) => {
+                        // Insert character at cursor position
+                        self.edit_input.insert(self.edit_cursor_pos, c);
+                        self.edit_cursor_pos += 1;
+                    }
+                    KeyCode::Backspace => {
+                        // Delete character before cursor
+                        if self.edit_cursor_pos > 0 {
+                            self.edit_cursor_pos -= 1;
+                            self.edit_input.remove(self.edit_cursor_pos);
+                        }
+                    }
+                    KeyCode::Delete => {
+                        // Delete character at cursor
+                        if self.edit_cursor_pos < self.edit_input.len() {
+                            self.edit_input.remove(self.edit_cursor_pos);
+                        }
+                    }
+                    KeyCode::Left => {
+                        // Move cursor left
+                        self.edit_cursor_pos = self.edit_cursor_pos.saturating_sub(1);
+                    }
+                    KeyCode::Right => {
+                        // Move cursor right
+                        if self.edit_cursor_pos < self.edit_input.len() {
+                            self.edit_cursor_pos += 1;
+                        }
+                    }
+                    KeyCode::Home => {
+                        // Move cursor to start
+                        self.edit_cursor_pos = 0;
+                    }
+                    KeyCode::End => {
+                        // Move cursor to end
+                        self.edit_cursor_pos = self.edit_input.len();
+                    }
+                    KeyCode::Enter => {
+                        // Commit the edit
+                        self.commit_edit();
+                    }
+                    KeyCode::Esc => {
+                        // Cancel the edit
+                        self.cancel_edit();
+                    }
+                    _ => {}
+                }
+                return;
+            }
+
+            // If in quit confirmation mode, handle confirmation
+            if self.quit_confirm_mode {
+                match code {
+                    KeyCode::Char('y') | KeyCode::Char('Y') => {
+                        // Yes - quit without saving
+                        self.should_quit = true;
+                    }
+                    KeyCode::Char('n') | KeyCode::Char('N') | KeyCode::Esc => {
+                        // No - cancel quit
+                        self.quit_confirm_mode = false;
+                    }
+                    KeyCode::Char('s') | KeyCode::Char('S') => {
+                        // Save and quit
+                        if self.save_workbook().is_ok() {
+                            self.should_quit = true;
+                        }
+                        self.quit_confirm_mode = false;
+                    }
+                    _ => {}
+                }
+                return;
+            }
+
             // Normal navigation and commands - using configured keybindings
             // Check actions in order of priority
             if self.key_matches(code, modifiers, "quit") {
-                self.should_quit = true;
+                if self.is_modified {
+                    self.quit_confirm_mode = true;
+                } else {
+                    self.should_quit = true;
+                }
+            } else if self.key_matches(code, modifiers, "save") {
+                let _ = self.save_workbook();
+            } else if self.key_matches(code, modifiers, "edit_cell") {
+                self.enter_edit_mode();
             } else if self.key_matches(code, modifiers, "help") {
                 self.show_help = true;
             } else if self.key_matches(code, modifiers, "theme_toggle") {
@@ -1308,6 +1491,9 @@ impl TuiState {
 
         let header = Row::new(header_cells).height(1);
 
+        // Get current sheet name for changeset lookup (before mutable borrow)
+        let current_sheet = self.current_sheet_name().to_string();
+
         // Get visible rows from data source (handles lazy loading if needed)
         let (visible_rows, _visible_formulas) =
             self.sheet_data.get_rows(visible_start, table_height);
@@ -1323,8 +1509,25 @@ impl TuiState {
                     .skip(visible_col_start)
                     .take(visible_col_end - visible_col_start)
                     .map(|(col_idx, cell)| {
+                        // Check if this cell has been edited
+                        let coord = CellCoordinate {
+                            sheet_name: current_sheet.clone(),
+                            row: row_idx,
+                            col: col_idx,
+                        };
+                        let (display_value, is_edited) = if let Some(edit) = self.changeset.get_edit(&coord) {
+                            (edit.new_value.clone(), true)
+                        } else {
+                            (cell.clone(), false)
+                        };
+
                         // Start with cell type color
-                        let mut style = Style::default().fg(colors.cell_color(cell));
+                        let mut style = Style::default().fg(colors.cell_color(&display_value));
+
+                        // Add italic modifier for edited cells
+                        if is_edited {
+                            style = style.add_modifier(Modifier::ITALIC);
+                        }
 
                         // Add alternating row background (only if not the current row)
                         let is_alternating_row = row_idx % 2 == 1;
@@ -1366,7 +1569,7 @@ impl TuiState {
                         else if col_idx == self.cursor_col {
                             style = style.fg(colors.current_col_fg);
                         }
-                        Cell::from(cell.to_string()).style(style)
+                        Cell::from(display_value.to_string()).style(style)
                     })
                     .collect();
                 Row::new(cells).height(1)
@@ -1389,15 +1592,17 @@ impl TuiState {
                 .collect()
         };
 
+        let modified_indicator = if self.is_modified { "*" } else { "" };
         let table_title = if self.sheet_names.len() > 1 {
             format!(
-                " {} (Sheet {}/{}) ",
+                " {}{} (Sheet {}/{}) ",
+                modified_indicator,
                 self.current_sheet_name(),
                 self.current_sheet_index + 1,
                 self.sheet_names.len()
             )
         } else {
-            format!(" {} ", self.current_sheet_name())
+            format!(" {}{} ", modified_indicator, self.current_sheet_name())
         };
 
         let table = Table::new(data_rows, col_widths).header(header).block(
@@ -1441,6 +1646,24 @@ impl TuiState {
         let status_text = if let Some(ref progress) = self.progress {
             // Show progress indicator
             format!(" ⏳ {} ", progress.format())
+        } else if self.quit_confirm_mode {
+            " Unsaved changes! (Y)es quit / (N)o / (S)ave and quit ".to_string()
+        } else if self.edit_mode {
+            // Show edit mode with cursor position
+            let cursor_indicator = if self.edit_cursor_pos < self.edit_input.len() {
+                format!(
+                    "{}|{}",
+                    &self.edit_input[..self.edit_cursor_pos],
+                    &self.edit_input[self.edit_cursor_pos..]
+                )
+            } else {
+                format!("{}|", &self.edit_input)
+            };
+            format!(
+                " Edit {}: {} (Enter:confirm Esc:cancel) ",
+                self.current_cell_address(),
+                cursor_indicator
+            )
         } else if self.jump_mode {
             format!(
                 " Jump to (row, cell like A5, or row,col): {} ",
@@ -1473,21 +1696,26 @@ impl TuiState {
                 SheetDataSource::Eager(_) => "",
             };
 
+            // Show save hint when modified
+            let save_hint = if self.is_modified { "^S:save " } else { "" };
+
             if self.sheet_names.len() > 1 {
                 format!(
-                    " {} | {}{} | Theme: {} | t:theme /:search Tab:sheet ?:help q:quit ",
+                    " {} | {}{} | Theme: {} | e:edit {}t:theme /:search Tab:sheet ?:help q:quit ",
                     self.current_cell_address(),
                     sheet_dims,
                     mode_indicator,
-                    self.current_theme.name()
+                    self.current_theme.name(),
+                    save_hint
                 )
             } else {
                 format!(
-                    " {} | {}{} | Theme: {} | t:theme /:search ?:help q:quit ",
+                    " {} | {}{} | Theme: {} | e:edit {}t:theme /:search ?:help q:quit ",
                     self.current_cell_address(),
                     sheet_dims,
                     mode_indicator,
-                    self.current_theme.name()
+                    self.current_theme.name(),
+                    save_hint
                 )
             }
         };
@@ -1617,6 +1845,33 @@ impl TuiState {
             ]),
             Line::from(""),
             Line::from(Span::styled(
+                "EDITING",
+                Style::default()
+                    .fg(Color::Yellow)
+                    .add_modifier(Modifier::BOLD),
+            )),
+            Line::from(vec![
+                Span::styled("  e                ", Style::default().fg(Color::Green)),
+                Span::raw("Edit current cell (i in VIM mode)"),
+            ]),
+            Line::from(vec![
+                Span::styled("  Enter            ", Style::default().fg(Color::Green)),
+                Span::raw("Confirm edit (in edit mode)"),
+            ]),
+            Line::from(vec![
+                Span::styled("  Esc              ", Style::default().fg(Color::Green)),
+                Span::raw("Cancel edit (in edit mode)"),
+            ]),
+            Line::from(vec![
+                Span::styled("  Ctrl+S           ", Style::default().fg(Color::Green)),
+                Span::raw("Save changes to file"),
+            ]),
+            Line::from(vec![
+                Span::styled("  * in title       ", Style::default().fg(Color::Magenta)),
+                Span::raw("Indicates unsaved changes"),
+            ]),
+            Line::from(""),
+            Line::from(Span::styled(
                 "SHEET NAVIGATION",
                 Style::default()
                     .fg(Color::Yellow)
@@ -1701,6 +1956,13 @@ impl TuiState {
                     Style::default().bg(Color::LightYellow).fg(Color::Black),
                 ),
                 Span::raw("  Other search matches"),
+            ]),
+            Line::from(vec![
+                Span::styled(
+                    "  Italic text      ",
+                    Style::default().add_modifier(Modifier::ITALIC),
+                ),
+                Span::raw("  Edited cell (unsaved)"),
             ]),
             Line::from(""),
             Line::from("  Cell colors vary by type and current theme:"),
@@ -2081,6 +2343,7 @@ pub fn run_tui(
     sheet_name: &str,
     config: &crate::config::Config,
     horizontal_scroll: bool,
+    file_path: PathBuf,
 ) -> Result<()> {
     // Check if stdout is a TTY before attempting to use interactive mode
     use std::io::IsTerminal;
@@ -2100,7 +2363,7 @@ pub fn run_tui(
     let mut terminal = Terminal::new(backend).context("Failed to initialize terminal backend")?;
 
     // Create app state
-    let mut app = TuiState::new(workbook, sheet_name, config, horizontal_scroll)?;
+    let mut app = TuiState::new(workbook, sheet_name, config, horizontal_scroll, file_path)?;
 
     // Main event loop
     let res = run_event_loop(&mut terminal, &mut app);

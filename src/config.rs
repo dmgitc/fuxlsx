@@ -173,6 +173,8 @@ profile = "default"
 # copy_row = "C"
 # jump = "Ctrl+g"
 # show_cell_detail = "Enter"
+# edit_cell = "e"
+# save = "Ctrl+s"
 
 # VIM-style navigation (when profile = "vim")
 # up = "k"
@@ -272,6 +274,8 @@ fn get_default_keybinding(action: &str) -> Option<(KeyCode, KeyModifiers)> {
         "jump_to_bottom" => ("End", KeyModifiers::CONTROL),
         "jump_to_row_start" => ("Home", KeyModifiers::empty()),
         "jump_to_row_end" => ("End", KeyModifiers::empty()),
+        "edit_cell" => ("e", KeyModifiers::empty()),
+        "save" => ("s", KeyModifiers::CONTROL),
         _ => return None,
     };
 
@@ -296,6 +300,7 @@ fn get_vim_keybinding(action: &str) -> Option<(KeyCode, KeyModifiers)> {
         "quit" => ("q", KeyModifiers::empty()),
         "copy_cell" => ("y", KeyModifiers::empty()),
         "copy_row" => ("Y", KeyModifiers::SHIFT),
+        "edit_cell" => ("i", KeyModifiers::empty()),
         // Keep standard bindings for non-VIM actions
         _ => return get_default_keybinding(action),
     };
