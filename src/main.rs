@@ -4,6 +4,7 @@ use std::path::PathBuf;
 
 mod config;
 mod display;
+mod save;
 mod tui;
 mod workbook;
 
@@ -164,7 +165,7 @@ fn main() -> Result<()> {
     // Display, export, or run TUI
     if cli.interactive {
         // Interactive TUI mode - pass the workbook so it can switch sheets
-        tui::run_tui(wb, &sheet_name, &config, cli.horizontal_scroll)?;
+        tui::run_tui(wb, &sheet_name, &config, cli.horizontal_scroll, cli.file.clone())?;
     } else {
         // Load the sheet data for non-interactive modes
         let data = wb

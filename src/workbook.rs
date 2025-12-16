@@ -1,6 +1,7 @@
 use anyhow::{Context, Result, anyhow};
 use calamine::{Data, Range, Reader, Sheets, Table, open_workbook_auto};
-use chrono::{Duration, NaiveDate};
+use chrono::{Duration, NaiveDate, NaiveDateTime, NaiveTime, Timelike};
+use std::collections::HashMap;
 use std::path::Path;
 
 pub struct Workbook {
@@ -272,6 +273,159 @@ impl CellValue {
                 }
             }
         }
+    }
+
+    /// Parse a string input into the most appropriate CellValue type
+    /// Type inference order: Empty -> Bool -> Int -> Float -> DateTime -> String
+    pub fn parse_from_input(input: &str) -> CellValue {
+        let trimmed = input.trim();
+
+        // Empty string
+        if trimmed.is_empty() {
+            return CellValue::Empty;
+        }
+
+        // Boolean (case-insensitive)
+        match trimmed.to_lowercase().as_str() {
+            "true" | "yes" => return CellValue::Bool(true),
+            "false" | "no" => return CellValue::Bool(false),
+            _ => {}
+        }
+
+        // Integer
+        if let Ok(i) = trimmed.parse::<i64>() {
+            return CellValue::Int(i);
+        }
+
+        // Float
+        if let Ok(f) = trimmed.parse::<f64>() {
+            return CellValue::Float(f);
+        }
+
+        // DateTime - multiple formats
+        if let Some(dt) = Self::try_parse_datetime(trimmed) {
+            return CellValue::DateTime(dt);
+        }
+
+        // Default to string
+        CellValue::String(trimmed.to_string())
+    }
+
+    /// Try to parse datetime in common formats, return Excel serial number
+    fn try_parse_datetime(input: &str) -> Option<f64> {
+        // Try YYYY-MM-DD
+        if let Ok(date) = NaiveDate::parse_from_str(input, "%Y-%m-%d") {
+            return Some(Self::date_to_excel_serial(date, None));
+        }
+
+        // Try YYYY-MM-DD HH:MM:SS
+        if let Ok(dt) = NaiveDateTime::parse_from_str(input, "%Y-%m-%d %H:%M:%S") {
+            return Some(Self::date_to_excel_serial(dt.date(), Some(dt.time())));
+        }
+
+        // Try YYYY-MM-DD HH:MM
+        if let Ok(dt) = NaiveDateTime::parse_from_str(input, "%Y-%m-%d %H:%M") {
+            return Some(Self::date_to_excel_serial(dt.date(), Some(dt.time())));
+        }
+
+        // Try MM/DD/YYYY (US format)
+        if let Ok(date) = NaiveDate::parse_from_str(input, "%m/%d/%Y") {
+            return Some(Self::date_to_excel_serial(date, None));
+        }
+
+        // Try DD/MM/YYYY (European format)
+        if let Ok(date) = NaiveDate::parse_from_str(input, "%d/%m/%Y") {
+            return Some(Self::date_to_excel_serial(date, None));
+        }
+
+        // Try DD.MM.YYYY (German format)
+        if let Ok(date) = NaiveDate::parse_from_str(input, "%d.%m.%Y") {
+            return Some(Self::date_to_excel_serial(date, None));
+        }
+
+        None
+    }
+
+    /// Convert a date to Excel serial number
+    fn date_to_excel_serial(date: NaiveDate, time: Option<NaiveTime>) -> f64 {
+        // Excel epoch: December 30, 1899 (day 0)
+        // But we use Dec 31, 1899 as day 0 to account for Excel's 1900 leap year bug
+        let excel_epoch = NaiveDate::from_ymd_opt(1899, 12, 30).unwrap();
+        let days = (date - excel_epoch).num_days() as f64;
+
+        // Add 1 to account for Excel's 1900 leap year bug for dates after Feb 28, 1900
+        let days = if days >= 60.0 { days + 1.0 } else { days };
+
+        if let Some(t) = time {
+            let seconds = t.num_seconds_from_midnight() as f64;
+            days + (seconds / 86400.0)
+        } else {
+            days
+        }
+    }
+}
+
+// ===== Cell Editing Support =====
+
+/// Coordinate for a cell within a sheet (for tracking edits)
+#[derive(Debug, Clone, Hash, Eq, PartialEq)]
+pub struct CellCoordinate {
+    pub sheet_name: String,
+    pub row: usize, // 0-indexed (data row, not including header)
+    pub col: usize, // 0-indexed
+}
+
+/// A single edit operation
+#[derive(Debug, Clone)]
+pub struct CellEdit {
+    pub original_value: CellValue,
+    pub original_formula: Option<String>,
+    pub new_value: CellValue,
+    // Note: new_formula is always None - editing clears the formula
+}
+
+/// Tracks all pending edits to the workbook
+#[derive(Debug, Clone, Default)]
+pub struct Changeset {
+    edits: HashMap<CellCoordinate, CellEdit>,
+}
+
+impl Changeset {
+    pub fn new() -> Self {
+        Self {
+            edits: HashMap::new(),
+        }
+    }
+
+    pub fn add_edit(&mut self, coord: CellCoordinate, edit: CellEdit) {
+        self.edits.insert(coord, edit);
+    }
+
+    pub fn remove_edit(&mut self, coord: &CellCoordinate) {
+        self.edits.remove(coord);
+    }
+
+    pub fn get_edit(&self, coord: &CellCoordinate) -> Option<&CellEdit> {
+        self.edits.get(coord)
+    }
+
+    pub fn has_changes(&self) -> bool {
+        !self.edits.is_empty()
+    }
+
+    pub fn clear(&mut self) {
+        self.edits.clear();
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = (&CellCoordinate, &CellEdit)> {
+        self.edits.iter()
+    }
+
+    pub fn edits_for_sheet(&self, sheet_name: &str) -> Vec<(&CellCoordinate, &CellEdit)> {
+        self.edits
+            .iter()
+            .filter(|(coord, _)| coord.sheet_name == sheet_name)
+            .collect()
     }
 }
 
